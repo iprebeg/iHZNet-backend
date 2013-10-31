@@ -1,0 +1,12 @@
+language: java
+jdk:
+- oraclejdk7
+deploy:
+  provider: openshift
+  user: ivor.prebeg@gmail.com
+  password:
+    secure: ayrANP9YWLdKI7eXn5s5TwGQgLqKP3RqO37UD2Ei7kgkeWloixMWsU+SBJjXLVDygBddYSQqD7qKdOn3NMZyiKdqGThLbt3Zsnjct8u2iQHYOQyqQIoi+mbkq9LH1QSaH44QiUrqw9gRY/3JsB2KbDJdlvOslhsBUqwfc80419c=
+  app: ihznet
+  domain: prebeg
+  on:
+    repo: iprebeg/iHZNet-backend
