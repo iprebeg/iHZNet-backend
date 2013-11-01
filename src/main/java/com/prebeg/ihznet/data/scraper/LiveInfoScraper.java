@@ -2,20 +2,11 @@ package com.prebeg.ihznet.data.scraper;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
@@ -23,41 +14,16 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.ThreadedRefreshHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebRequest;
-import com.gargoylesoftware.htmlunit.WebRequestSettings;
-import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlOption;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput;
-import com.gargoylesoftware.htmlunit.html.HtmlSelect;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import com.gargoylesoftware.htmlunit.html.HtmlTableCell;
-import com.gargoylesoftware.htmlunit.html.HtmlTableHeader;
-import com.gargoylesoftware.htmlunit.html.HtmlTableHeaderCell;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-import com.gargoylesoftware.htmlunit.javascript.host.Event;
-import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLOptionElement;
-
-import org.w3c.dom.NamedNodeMap;
-
-import com.prebeg.ihznet.model.Kolodvor;
-import com.prebeg.ihznet.model.Linija;
-import com.prebeg.ihznet.model.ListaKolodvora;
-import com.prebeg.ihznet.model.ListaLinija;
-import com.prebeg.ihznet.model.ListaOznaka;
-import com.prebeg.ihznet.model.ListaStajalista;
 import com.prebeg.ihznet.model.LiveInfo;
-import com.prebeg.ihznet.model.Oznaka;
 import com.prebeg.ihznet.model.Prolaziste;
-import com.prebeg.ihznet.model.Putovanje;
-import com.prebeg.ihznet.model.Raspored;
-import com.prebeg.ihznet.model.Stajaliste;
 import com.prebeg.ihznet.service.KolodvorService;
 import com.prebeg.ihznet.service.OznakaResolverService;
 import com.prebeg.ihznet.service.PeriodService;
