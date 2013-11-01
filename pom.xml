@@ -9,9 +9,9 @@
 	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java-version>1.6</java-version>
-		<org.springframework-version>3.0.4.RELEASE</org.springframework-version>
-		<org.springframework.roo-version>1.0.2.RELEASE</org.springframework.roo-version>
+		<java-version>1.7</java-version>
+		<org.springframework-version>3.2.4.RELEASE</org.springframework-version>
+		<org.springframework.roo-version>1.2.4.RELEASE</org.springframework.roo-version>
 		<org.aspectj-version>1.6.9</org.aspectj-version>
 		<org.slf4j-version>1.5.10</org.slf4j-version>
 	</properties>
@@ -100,33 +100,6 @@
 		</dependency>
 				
 				
-		<!-- Servlet (DOWNGRADING J2EE to 2.4 STACK TO WORK WITH TOMCAT 5.X) --> 
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.4</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>2.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>taglibs</groupId>
-			<artifactId>standard</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		 
-				
-		<!-- Servlet (API 2.5 NOT WORKING ON TOMCAT 5.X FUCKING HOSTING) -->
-		<!-- 
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -144,8 +117,6 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
-		 -->
-		 
 		 
 		<!-- Mailing -->
 		<dependency>
@@ -199,6 +170,11 @@
 			<name>Spring Maven Milestone Repository</name>
 			<url>http://maven.springframework.org/milestone</url>
 			<snapshots><enabled>false</enabled></snapshots>
+		</repository>
+		<repository>
+      <id>org.springsource.repository.roo</id>
+      <name>Spring Roo repo</name>
+      <url>http://spring-roo-repository.springsource.org/release</url>
 		</repository>
 	</repositories>
 	<build>
