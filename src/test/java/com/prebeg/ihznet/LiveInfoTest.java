@@ -27,7 +27,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.prebeg.ihznet.model.ListaKolodvora;
 import com.prebeg.ihznet.model.LiveInfo;
 
 @RunWith(SpringJUnit4ClassRunner.class)

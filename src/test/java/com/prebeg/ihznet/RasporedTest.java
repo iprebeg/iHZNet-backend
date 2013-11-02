@@ -30,7 +30,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.prebeg.ihznet.model.Linija;
-import com.prebeg.ihznet.model.ListaKolodvora;
 import com.prebeg.ihznet.model.Putovanje;
 import com.prebeg.ihznet.model.Raspored;
 import com.prebeg.ihznet.model.Stajaliste;
