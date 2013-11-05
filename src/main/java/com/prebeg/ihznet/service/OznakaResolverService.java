@@ -14,6 +14,7 @@ import com.prebeg.ihznet.model.Oznaka;
 @Component
 public class OznakaResolverService {
 
+	@SuppressWarnings("unused")
 	private transient final Log log = LogFactory.getLog(getClass());
 
 	public ListaOznaka resolve(HtmlTableCell tableCell)

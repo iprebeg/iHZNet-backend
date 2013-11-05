@@ -31,6 +31,7 @@ import com.prebeg.ihznet.service.PeriodService;
 @Component
 public class LiveInfoScraper {
 	
+	@SuppressWarnings("unused")
 	private transient final Log log = LogFactory.getLog(getClass());
 	
 	@Resource

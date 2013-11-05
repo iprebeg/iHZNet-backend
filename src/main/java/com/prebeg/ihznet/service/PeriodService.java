@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PeriodService {
 
+	@SuppressWarnings("unused")
 	private transient final Log log = LogFactory.getLog(getClass());
 	
 	public String calulatePeriodFromAToB(String a, String b) {

@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
+
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.prebeg.ihznet.data.scraper.KolodvorScraper;
 import com.prebeg.ihznet.model.ListaKolodvora;
@@ -15,6 +16,7 @@ import com.prebeg.ihznet.model.ListaKolodvora;
 @Component
 public class KolodvorService {
 	
+	@SuppressWarnings("unused")
 	private transient final Log log = LogFactory.getLog(getClass());
 
 	@Resource

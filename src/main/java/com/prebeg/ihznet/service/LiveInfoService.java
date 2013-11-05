@@ -16,7 +16,8 @@ import com.prebeg.ihznet.model.LiveInfo;
 @Component
 public class LiveInfoService {
 
-private transient final Log log = LogFactory.getLog(getClass());
+	@SuppressWarnings("unused")
+	private transient final Log log = LogFactory.getLog(getClass());
 	
 	@Resource
 	LiveInfoScraper liveInfoScraper;
