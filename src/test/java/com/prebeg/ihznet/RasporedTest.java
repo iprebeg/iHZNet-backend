@@ -85,7 +85,7 @@ public class RasporedTest extends TestCase {
     	assertNotNull(lista);
     	assertNotNull(lista.getPutovanja());
     	assertTrue(!lista.getPutovanja().isEmpty());
-    	assertTrue(lista.getPutovanja().size() >= 2);
+    	assertTrue(lista.getPutovanja().size() >= 1);
     	
     	System.out.println("SIZE:" + lista.getPutovanja().size());
     	
