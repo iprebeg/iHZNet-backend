@@ -3,7 +3,6 @@ package com.prebeg.ihznet.service;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PeriodService {
 
+	@SuppressWarnings("unused")
 	private transient final Log log = LogFactory.getLog(getClass());
 	
 	public String calulatePeriodFromAToB(String a, String b) {

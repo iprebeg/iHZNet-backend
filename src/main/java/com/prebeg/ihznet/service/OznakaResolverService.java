@@ -7,8 +7,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlImage;
 import com.gargoylesoftware.htmlunit.html.HtmlTableCell;
 import com.prebeg.ihznet.model.ListaOznaka;
 import com.prebeg.ihznet.model.Oznaka;
@@ -16,6 +14,7 @@ import com.prebeg.ihznet.model.Oznaka;
 @Component
 public class OznakaResolverService {
 
+	@SuppressWarnings("unused")
 	private transient final Log log = LogFactory.getLog(getClass());
 
 	public ListaOznaka resolve(HtmlTableCell tableCell)

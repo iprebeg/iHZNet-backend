@@ -1,6 +1,7 @@
 package com.prebeg.ihznet.service;
 
 import javax.annotation.Resource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import com.prebeg.ihznet.model.Raspored;
 @Component
 public class RasporedService {
 	
+	@SuppressWarnings("unused")
 	private transient final Log log = LogFactory.getLog(getClass());
 	
 	@Resource
