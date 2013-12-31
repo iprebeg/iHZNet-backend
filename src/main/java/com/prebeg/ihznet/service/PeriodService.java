@@ -9,6 +9,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
+import org.joda.time.Period;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormat;
+import org.joda.time.format.PeriodFormatterBuilder;
+
 @Component
 public class PeriodService {
 
@@ -17,58 +25,45 @@ public class PeriodService {
 	
 	public String calulatePeriodFromAToB(String a, String b) {
 		
-		String delta = null;
-		
-		DateFormat df = new SimpleDateFormat("HH:mm");
-		DateFormat dfm = new SimpleDateFormat("mm");
-		DateFormat dfh = new SimpleDateFormat("HH");
+    //System.out.println("a:" + a);
+    //System.out.println("b:" + b);
+
+    if (a.compareTo(b) <= 0)
+    {
+      a = "01.01.1970" + " " + a;
+      b = "01.01.1970" + " " + b;
+    }
+    else
+    {
+      a = "01.01.1970" + " " + a;
+      b = "02.01.1970" + " " + b;
+    }
+
+		String delta = "";
 		
 		try {
-			/* testing */
-			Date da = df.parse(a);
-			Date db = df.parse(b);
+		  DateTimeFormatter df = DateTimeFormat.forPattern("dd.MM.YYYY HH:mm");
+		
+			DateTime da = df.parseDateTime(a);
+			DateTime db = df.parseDateTime(b);
 			
-			
-			//log.info("formating: a:" + df.format(da) + " b:" + df.format(db));
-			
-			Long deltaT = db.getTime() - da.getTime() - (60 * 60 * 1000);
-			
-			Date deltaD = new Date(deltaT);
-			
-			//Date deltaBAT = new Date(deltaT);
-			//log.info("1: for " + deltaT + " seconds, deltaBAT:" + df.format(deltaD));
-			delta = df.format(deltaD);
+      Period period = new Period(da, db);
 
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+      PeriodFormatter pf = new PeriodFormatterBuilder()
+        .printZeroAlways()
+        .minimumPrintedDigits(2)
+        .appendHours()
+        .appendSeparator(":")
+        .appendMinutes()
+        .toFormatter();
+
+			delta = pf.print(period);
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		/*
-		try {
-			Date da = df.parse(a);
-			Date db = df.parse(b);
-			
-			Calendar cb = Calendar.getInstance();
-			
-			String deltaT;
-			
-			cb.set(Calendar.MINUTE, Integer.parseInt(dfm.format(db)));
-			cb.set(Calendar.HOUR_OF_DAY, Integer.parseInt(dfh.format(db)));
-
-			cb.add(Calendar.HOUR_OF_DAY, -(Integer.parseInt(dfh.format(da))));
-			cb.add(Calendar.MINUTE, -(Integer.parseInt(dfm.format(da))));
-			
-			Date deltad = cb.getTime();
-			deltaT = df.format(deltad);
-			
-			log.info("2:deltaCAL:" + deltaT);
-			
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
+    //System.out.println("c:" + delta);
 		
 		return delta;
 	}
