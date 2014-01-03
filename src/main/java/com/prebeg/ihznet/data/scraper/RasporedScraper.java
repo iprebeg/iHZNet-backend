@@ -91,8 +91,8 @@ public class RasporedScraper {
 		NKDO1Select.setSelectedAttribute(NKDO1opt, true);
 		NKOD1Select.setSelectedAttribute(NKOD1opt, true);
 		
-		log.info("resolved NKDO1 as " + NKDO1opt.asText());
-		log.info("resolved NKOD1 as " + NKOD1opt.asText());
+		//log.info("resolved NKDO1 as " + NKDO1opt.asText());
+		//log.info("resolved NKOD1 as " + NKOD1opt.asText());
 		
 		/* datum */
 		final HtmlSelect DTSelect = (HtmlSelect) searchForm.getSelectByName("DT");
@@ -151,8 +151,8 @@ public class RasporedScraper {
 		final HtmlOption NKOD1opt = NKOD1Select.getOption(odlazniKolodvorId); 
 		final HtmlOption NKDO1opt = NKDO1Select.getOption(dolazniKolodvorId); 
 		
-		log.info("resolved NKOD1 as " + NKOD1opt.getValueAttribute());
-		log.info("resolved NKDO1 as " + NKDO1opt.getValueAttribute());
+		//log.info("resolved NKOD1 as " + NKOD1opt.getValueAttribute());
+		//log.info("resolved NKDO1 as " + NKDO1opt.getValueAttribute());
 			
 			NKOD1Select.click();
 			NKOD1opt.setSelected(true);

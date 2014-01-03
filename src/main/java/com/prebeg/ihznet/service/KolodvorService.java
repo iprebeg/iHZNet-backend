@@ -3,6 +3,8 @@ package com.prebeg.ihznet.service;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
@@ -22,25 +24,22 @@ public class KolodvorService {
 	@Resource
 	KolodvorScraper kolodvorScraper;
 	
+  Date ts = null;
+  ListaKolodvora kolodvori = null;
+  private static int secondsStale = 3600;
+
 	public ListaKolodvora getKolodvori() {
+	
+    if (kolodvori == null || ts == null || ((new Date()).getTime()-ts.getTime())/1000 > secondsStale)
+    {
+		  try {
+			  kolodvori = kolodvorScraper.getKolodvori();
+        ts = new Date();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
 		
-		ListaKolodvora kolodvori = null;
-		
-		try {
-			kolodvori = kolodvorScraper.getKolodvori();
-		} catch (FailingHttpStatusCodeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return kolodvori;
 	}
 }
