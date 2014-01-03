@@ -12,6 +12,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name="raspored")
 public class Raspored {
 	
+  @XmlElement(name="waitpoll")
+  private boolean waitpoll = false;
+
 	@XmlElement(name="putovanje")
 	private List<Putovanje> putovanja = new LinkedList<Putovanje> ();
 	
@@ -26,4 +29,12 @@ public class Raspored {
 	public List<Putovanje> getPutovanja () {
 		return putovanja;
 	}
+
+  public boolean getWaitpoll() {
+    return waitpoll;
+  }
+
+  public void setWaitpoll(boolean waitpoll) {
+    this.waitpoll = waitpoll;
+  }
 }
