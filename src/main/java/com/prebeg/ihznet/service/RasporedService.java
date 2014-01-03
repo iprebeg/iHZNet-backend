@@ -37,10 +37,17 @@ public class RasporedService {
     {
       @Override
       public void run() {
+        
         String key = key(odlazniKolodvorId,dolazniKolodvorId,datum,dv);
-			  Raspored raspored = rasporedScraper.getRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, dv);
-        if (raspored != null)
-          cachedRasporedService.putRaspored(key, raspored);
+
+        if (cachedRasporedService.getRaspored(key) == null)
+        {
+			    Raspored raspored = rasporedScraper.getRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, dv);
+          if (raspored != null)
+          {
+            cachedRasporedService.putRaspored(key, raspored);
+          }
+        }
       }
     }.start();
 
@@ -50,10 +57,19 @@ public class RasporedService {
       {
         @Override
         public void run() {
+          
           String key = key(odlazniKolodvorId,dolazniKolodvorId,datum,"S");
-			    Raspored raspored = rasporedScraper.getRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, "S");
-          if (raspored != null)
-            cachedRasporedService.putRaspored(key, raspored);
+          
+          if (cachedRasporedService.getRaspored(key) == null)
+          {
+            System.out.println("doin veze too");
+			      Raspored raspored = rasporedScraper.getRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, "S");
+            System.out.println("done veze");
+            if (raspored != null)
+            {
+              cachedRasporedService.putRaspored(key, raspored);
+            }
+          }
         }
       }.start();
     }
