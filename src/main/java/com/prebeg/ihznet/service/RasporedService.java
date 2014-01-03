@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import com.prebeg.ihznet.data.scraper.RasporedScraper;
 import com.prebeg.ihznet.model.Raspored;
 
+import java.util.Set;
+import java.util.HashSet;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.lang.Runtime;
@@ -25,51 +28,31 @@ public class RasporedService {
   @Resource
   CachedRasporedService cachedRasporedService;
 
+  final Set<String> currentScraping = new HashSet<String>();
+
   private String key(Integer odlazniKolodvorId, Integer dolazniKolodvorId, String datum, String dv) 
   {
     String key = odlazniKolodvorId.toString() + "##" + dolazniKolodvorId.toString() + "##" + datum + "##" + dv;
     return key;
   }
 
-  private void inOtherThread(final Integer odlazniKolodvorId, final Integer dolazniKolodvorId, final String datum, final String dv) 
+  private void asyncFetch(final Integer odlazniKolodvorId, final Integer dolazniKolodvorId, final String datum, final String dv) 
   {
-    new Thread()
-    {
-      @Override
-      public void run() {
-        
-        String key = key(odlazniKolodvorId,dolazniKolodvorId,datum,dv);
+    // preemptive S
+    if (dv.equals("D")) {
+      asyncFetch(odlazniKolodvorId, dolazniKolodvorId, datum, "S");
+    }
 
-        if (cachedRasporedService.getRaspored(key) == null)
-        {
-			    Raspored raspored = rasporedScraper.getRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, dv);
-          if (raspored != null)
-          {
-            cachedRasporedService.putRaspored(key, raspored);
-          }
-        }
-      }
-    }.start();
-
-    if (dv.equals("D"))
+    final String key = key(odlazniKolodvorId,dolazniKolodvorId,datum,dv);
+    if (cachedRasporedService.getRaspored(key) == null && !currentScraping.contains(key))
     {
-      new Thread()
-      {
+      new Thread() {
         @Override
         public void run() {
-          
-          String key = key(odlazniKolodvorId,dolazniKolodvorId,datum,"S");
-          
-          if (cachedRasporedService.getRaspored(key) == null)
-          {
-            System.out.println("doin veze too");
-			      Raspored raspored = rasporedScraper.getRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, "S");
-            System.out.println("done veze");
-            if (raspored != null)
-            {
-              cachedRasporedService.putRaspored(key, raspored);
-            }
-          }
+          currentScraping.add(key);
+			    Raspored raspored = rasporedScraper.getRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, dv);
+          if (raspored != null) cachedRasporedService.putRaspored(key, raspored);
+          currentScraping.remove(key);
         }
       }.start();
     }
@@ -82,16 +65,9 @@ public class RasporedService {
 
     if (raspored == null)
     {
+      asyncFetch(odlazniKolodvorId,dolazniKolodvorId,datum,dv);
       raspored = new Raspored();
       raspored.setWaitpoll(true);
-      try 
-      {
-        inOtherThread(odlazniKolodvorId,dolazniKolodvorId,datum,dv);
-		  } 
-      catch (Exception e) 
-      {
-			  e.printStackTrace();
-	  	}
     }
 		
 		return raspored;
@@ -102,15 +78,13 @@ public class RasporedService {
     String key = key(odlazniKolodvorId,dolazniKolodvorId,datum,dv);
 		Raspored raspored = cachedRasporedService.getRaspored(key);
    
-    try {
-      if (raspored == null)
-      {
-        raspored = rasporedScraper.getRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, dv);
-        if (raspored != null) cachedRasporedService.putRaspored(key, raspored);
-      }
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+    if (raspored == null)
+    {
+      currentScraping.add(key);
+      asyncFetch(odlazniKolodvorId,dolazniKolodvorId,datum,dv);
+      raspored = rasporedScraper.getRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, dv);
+      if (raspored != null) cachedRasporedService.putRaspored(key, raspored);
+      currentScraping.remove(key);
     }
 
     return raspored;
