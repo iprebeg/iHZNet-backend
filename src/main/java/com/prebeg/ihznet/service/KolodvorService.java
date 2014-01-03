@@ -33,6 +33,7 @@ public class KolodvorService {
     if (kolodvori == null || ts == null || ((new Date()).getTime()-ts.getTime())/1000 > secondsStale)
     {
 		  try {
+        log.debug("scraping kolodvors");
 			  kolodvori = kolodvorScraper.getKolodvori();
         ts = new Date();
       } catch (Exception e) {
