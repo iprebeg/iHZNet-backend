@@ -37,13 +37,24 @@ public class iHZNetController {
 	@Resource
 	KolodvorService kolodvorService;
 	
+  @RequestMapping(value="/cachedraspored", method=RequestMethod.GET)
+	@ResponseBody
+	public Raspored cachedRaspored(@RequestParam("NKOD1") Integer odlazniKolodvorId, @RequestParam("NKDO1") Integer dolazniKolodvorId, 
+			@RequestParam("DT") String datum, @RequestParam("DV") String dv) {
+		
+		//log.info("cachedraspored:" + odlazniKolodvorId + "," + dolazniKolodvorId + "," + datum + "," + dv);
+			
+		Raspored raspored = rasporedService.getCachedRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, dv);
+
+    return raspored;
+	}
 	
 	@RequestMapping(value="/raspored", method=RequestMethod.GET)
 	@ResponseBody
 	public Raspored raspored(@RequestParam("NKOD1") Integer odlazniKolodvorId, @RequestParam("NKDO1") Integer dolazniKolodvorId, 
 			@RequestParam("DT") String datum, @RequestParam("DV") String dv) {
 		
-		log.info("raspored:" + odlazniKolodvorId + "," + dolazniKolodvorId + "," + datum + "," + dv);
+		//log.info("raspored:" + odlazniKolodvorId + "," + dolazniKolodvorId + "," + datum + "," + dv);
 			
 		Raspored raspored = rasporedService.getRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, dv);
 		return raspored;
@@ -53,7 +64,7 @@ public class iHZNetController {
 	@ResponseBody
 	public ListaKolodvora listaKolodvora() {
 		
-		log.info("listaKolodvora");
+		//log.info("listaKolodvora");
 		ListaKolodvora kolodvori = kolodvorService.getKolodvori();
 		return kolodvori;
 	}
@@ -62,7 +73,7 @@ public class iHZNetController {
 	@ResponseBody
 	public LiveInfo liveInfo(@RequestParam("VL") String linija) {
 		
-		log.debug("liveInfo");
+		//log.debug("liveInfo");
 		LiveInfo liveInfo = liveInfoService.getLiveInfo(linija);
 		
 		return liveInfo;
