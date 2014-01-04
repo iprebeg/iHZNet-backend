@@ -48,9 +48,9 @@ public class LiveInfoScraper {
 	private String baseurl = "http://vred.hzinfra.hr/hzinfo/Default.asp?VL=&Category=hzinfo&Service=tpvl&SCREEN=2";
 	
 	private WebClient getWebClient() {
-		WebClient wc = new WebClient(BrowserVersion.FIREFOX_3_6);
-		wc.setCssEnabled(true);
-		wc.setJavaScriptEnabled(true);		
+		WebClient wc = new WebClient(BrowserVersion.CHROME);
+		wc.getOptions().setCssEnabled(true);
+		wc.getOptions().setJavaScriptEnabled(true);		
 		wc.setAjaxController(new NicelyResynchronizingAjaxController());
 		wc.setRefreshHandler(new ThreadedRefreshHandler());
 
@@ -78,6 +78,7 @@ public class LiveInfoScraper {
 		
 		LiveInfo liveInfo = getVlakInfo(vlakPage);
 		
+		wc.closeAllWindows();
 		return liveInfo;
 	
 	}

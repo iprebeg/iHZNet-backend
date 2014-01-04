@@ -56,79 +56,15 @@ public class RasporedScraper {
 
 	
 	private WebClient getWebClient() {
-		WebClient wc = new WebClient(BrowserVersion.FIREFOX_3_6);
-		wc.setCssEnabled(true);
-		wc.setJavaScriptEnabled(true);		
+		WebClient wc = new WebClient(BrowserVersion.CHROME);
+		wc.getOptions().setCssEnabled(true);
+		wc.getOptions().setJavaScriptEnabled(true);		
 		wc.setAjaxController(new NicelyResynchronizingAjaxController());
 		
 		return wc;
 	}
 	
-	
-	private HtmlPage getTimeTablePage_no_js(Integer odlazniKolodvorId, Integer dolazniKolodvorId, String datum, String dv) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-		
-		WebClient wc = getWebClient();
-		
-		WebRequest webRequest = new WebRequest(new URL(baseurl));
-		
-		/* I can't even explain how important this crap is 
-		 * If you set this in some other form, Đ ŠČ chars 
-		 * will be encoded in different encoding and urls 
-		 * will break on you 
-		 */
-		webRequest.setCharset("Windows-1250");
-		
-		final HtmlPage page = wc.getPage(webRequest);		
-		
-		HtmlForm searchForm = page.getForms().get(0);
-	
-		final HtmlSelect NKDO1Select = (HtmlSelect) searchForm.getSelectByName("NKDO1");
-		final HtmlSelect NKOD1Select = (HtmlSelect) searchForm.getSelectByName("NKOD1");
-		
-		final HtmlOption NKDO1opt = NKDO1Select.getOption(dolazniKolodvorId); 
-		final HtmlOption NKOD1opt = NKOD1Select.getOption(odlazniKolodvorId); 
-		
-		NKDO1Select.setSelectedAttribute(NKDO1opt, true);
-		NKOD1Select.setSelectedAttribute(NKOD1opt, true);
-		
-		//log.info("resolved NKDO1 as " + NKDO1opt.asText());
-		//log.info("resolved NKOD1 as " + NKOD1opt.asText());
-		
-		/* datum */
-		final HtmlSelect DTSelect = (HtmlSelect) searchForm.getSelectByName("DT");
-		DTSelect.setSelectedAttribute(datum, true);
-				
-		/* lista */
-		final HtmlRadioButtonInput dRadio = searchForm.getRadioButtonsByName("DV").get(0);
-		final HtmlRadioButtonInput sRadio = searchForm.getRadioButtonsByName("DV").get(1);
-		final HtmlRadioButtonInput aRadio = searchForm.getRadioButtonsByName("DV").get(2);
-		
-		if (dv.equals("D")) {
-			dRadio.setChecked(true);
-			sRadio.setChecked(false);
-			aRadio.setChecked(false);
-		} else if (dv.equals("S")) {
-			dRadio.setChecked(false);
-			sRadio.setChecked(true);
-			aRadio.setChecked(false);
-		} else if (dv.equals("A")) {
-			dRadio.setChecked(false);
-			sRadio.setChecked(false);
-			aRadio.setChecked(true);
-		}
-		
-		final HtmlInput prikaziButton = (HtmlInput) searchForm.getInputsByValue("Prikaži vlakove koji voze na relaciji").get(0);
-		
-		final HtmlPage timeTablePage = (HtmlPage) prikaziButton.click();
-		
-		//log.info(timeTablePage.asXml());
-		
-		return timeTablePage;
-	}
-	
-	private HtmlPage getTimeTablePage(Integer odlazniKolodvorId, Integer dolazniKolodvorId, String datum, String dv) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-		
-		WebClient wc = getWebClient();
+	private HtmlPage getTimeTablePage(WebClient wc, Integer odlazniKolodvorId, Integer dolazniKolodvorId, String datum, String dv) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		
 		WebRequest webRequest = new WebRequest(new URL(baseurl));
 		
@@ -212,13 +148,15 @@ public class RasporedScraper {
 
 	public Raspored getRaspored(Integer odlazniKolodvorId, Integer dolazniKolodvorId, String datum, String dv) {
 		
+		WebClient wc = getWebClient();
+
 		Raspored raspored = new Raspored();
-		
+
 		List<Putovanje> novaPutovanja = null;
 		
 		try {
 			
-			HtmlPage timeTablePage = getTimeTablePage(odlazniKolodvorId, dolazniKolodvorId, datum, dv);
+			HtmlPage timeTablePage = getTimeTablePage(wc, odlazniKolodvorId, dolazniKolodvorId, datum, dv);
 			
 			if (dv.equals("D")) {
 				novaPutovanja = getIzravnaPutovanja(timeTablePage);
@@ -235,6 +173,7 @@ public class RasporedScraper {
 			e.printStackTrace();
 		}
 		
+		wc.closeAllWindows();
 		return raspored;
 	}
 	
@@ -299,54 +238,10 @@ private List<Putovanje> getSvaPutovanjaSMogucimVezama(HtmlPage timeTablePage) th
 		
 		return putovanja;
 	}
-
-	
-	private List<Putovanje> getSvaPutovanjaSMogucimVezama_no_js(HtmlPage timeTablePage) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-		
-		HtmlTable timeTable = (HtmlTable)timeTablePage.getElementsByTagName("table").item(1);
-
-		List<Putovanje> putovanja = new LinkedList<Putovanje>();
-		
-		for (HtmlTableRow row : timeTable.getRows()) {
-			
-			// skip header
-			if (row == timeTable.getRow(0))
-				continue;
-				
-			HtmlTableCell tableCell = row.getCell(2);
-			
-			for (HtmlElement he: tableCell.getElementsByTagName("table")) {
-				
-
-				// skip direct travel
-				if (he == tableCell.getElementsByTagName("table").item(0))
-					continue;
-				
-				HtmlTableRow mogucePutovanje = ((HtmlTable)he).getRow(0);
-				
-				HtmlTableCell urlCell = mogucePutovanje.getCells().get(2);
-				HtmlAnchor putovanjeUrl = (HtmlAnchor)urlCell.getElementsByTagName("a").get(1);
-				
-				//System.out.println("##############################\n"+ putovanjeUrl.asText() + "##############################\n");
-
-				//System.out.println("scraping " + putovanjeUrl);
-				Putovanje putovanje = scrapePutovanje(putovanjeUrl);
-				
-				if (putovanje != null) {
-					putovanja.add(putovanje);
-				}	
-			}
-		}
-		
-
-		return putovanja;
-	}
 	
 	private List<Putovanje> getSvaPutovanjaSaSvimVezama(HtmlPage timeTablePage) throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		return null;
 	}
-	
-	
 	
 	private Putovanje scrapePutovanje(HtmlAnchor url) throws IOException {
 		
