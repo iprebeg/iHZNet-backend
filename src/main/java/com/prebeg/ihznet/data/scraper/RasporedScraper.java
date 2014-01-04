@@ -151,7 +151,7 @@ public class RasporedScraper {
 		final HtmlOption NKOD1opt = NKOD1Select.getOption(odlazniKolodvorId); 
 		final HtmlOption NKDO1opt = NKDO1Select.getOption(dolazniKolodvorId); 
 		
-    log.info(NKOD1opt.getValueAttribute() + " -> " + NKDO1opt.getValueAttribute());
+    log.info(NKOD1opt.getValueAttribute() + " -> " + NKDO1opt.getValueAttribute() + " " + dv);
 		//log.info("resolved NKOD1 as " + NKOD1opt.getValueAttribute());
 		//log.info("resolved NKDO1 as " + NKDO1opt.getValueAttribute());
 			
