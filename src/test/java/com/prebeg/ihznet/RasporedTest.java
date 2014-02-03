@@ -53,15 +53,15 @@ public class RasporedTest extends TestCase {
     }
     
     @Test
-    public void test_01_getDjakovoZagreb() throws Exception 
+    public void test_01_getOsijekZagreb() throws Exception 
     {
     	SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.YYYY");
     	Date today = new Date();
     	
     	String dt = sdf.format(today);
     	String dv = "S";
-    	int odk = 145;
-    	int dok = 649;
+    	int odk = 397;
+    	int dok = 657;
     	
     	String url = String.format("/raspored?NKOD1=%d&NKDO1=%d&DT=%s&DV=%s", odk, dok, dt, dv);
     	
