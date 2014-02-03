@@ -62,8 +62,8 @@ public class ParallelRasporedScraper {
 	@PostConstruct
 	public void postConstruct() {
 		// exec = Executors.newCachedThreadPool();
-		exec = Executors.newFixedThreadPool(30);
 		// exec = Executors.newSingleThreadExecutor();
+		exec = Executors.newFixedThreadPool(30);
 	}
 	
 	@PreDestroy
@@ -89,8 +89,7 @@ public class ParallelRasporedScraper {
 		WebClient wc = new WebClient(BrowserVersion.CHROME);
 		wc.getOptions().setCssEnabled(false);
 		wc.getOptions().setJavaScriptEnabled(false);
-		//wc.setAjaxController(new NicelyResynchronizingAjaxController());
-
+		
 		return wc;
 	}
 
@@ -191,8 +190,6 @@ public class ParallelRasporedScraper {
 	public Raspored getRaspored(Integer odlazniKolodvorId,
 			Integer dolazniKolodvorId, String datum, String dv) {
 
-		log.info("in get raspored");
-
 		long start = System.currentTimeMillis();
 
 		WebClient wc = getWebClient();
@@ -206,6 +203,7 @@ public class ParallelRasporedScraper {
 			HtmlPage timeTablePage = getTimeTablePage(wc, odlazniKolodvorId,
 					dolazniKolodvorId, datum, dv);
 
+			// should kill js executor 
 			wc.closeAllWindows();
 			
 			if (dv.equals("D")) {
@@ -224,7 +222,7 @@ public class ParallelRasporedScraper {
 		wc.closeAllWindows();
 
 		long elapsed = System.currentTimeMillis() - start;
-		System.out.println(String.format("Elapsed time: %d ms ", elapsed));
+		log.info(String.format("Elapsed time: %d ms ", elapsed));
 
 		return raspored;
 	}
@@ -235,7 +233,7 @@ public class ParallelRasporedScraper {
 
 		int i = 0;
 		
-		System.out.println("WILL LAUNCH " + urls.size() +  " TASKS");
+		//System.out.println("WILL LAUNCH " + urls.size() +  " TASKS");
 		
 		for (final String url : urls) {
 
@@ -244,9 +242,9 @@ public class ParallelRasporedScraper {
 			Callable<Putovanje> c = new Callable<Putovanje>() {
 				@Override
 				public Putovanje call() throws Exception {
-					log.info("OPEN " + in + " " + Thread.currentThread().getName() + " " + url);
+					//log.info("OPEN " + in + " " + Thread.currentThread().getName() + " " + url);
 					Putovanje p = scrapePutovanje(url);
-					log.info("DONE " + in + " " + Thread.currentThread().getName() + " " + url);
+					//log.info("DONE " + in + " " + Thread.currentThread().getName() + " " + url);
 					return p;
 				}
 			};
