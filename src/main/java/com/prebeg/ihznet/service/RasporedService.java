@@ -6,12 +6,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
+import com.prebeg.ihznet.data.scraper.ParallelRasporedScraper;
 import com.prebeg.ihznet.data.scraper.RasporedScraper;
 import com.prebeg.ihznet.model.Raspored;
 
 import java.util.Set;
 import java.util.HashSet;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.lang.Runtime;
@@ -23,7 +23,7 @@ public class RasporedService {
 	private transient final Log log = LogFactory.getLog(getClass());
 	
 	@Resource
-	RasporedScraper rasporedScraper;
+	ParallelRasporedScraper prasporedScraper;
 	
   @Resource
   CachedRasporedService cachedRasporedService;
@@ -40,7 +40,7 @@ public class RasporedService {
   {
     // preemptive S
     if (dv.equals("D")) {
-      asyncFetch(odlazniKolodvorId, dolazniKolodvorId, datum, "S");
+      //asyncFetch(odlazniKolodvorId, dolazniKolodvorId, datum, "S");
     }
 
     final String key = key(odlazniKolodvorId,dolazniKolodvorId,datum,dv);
@@ -50,7 +50,7 @@ public class RasporedService {
         @Override
         public void run() {
           currentScraping.add(key);
-			    Raspored raspored = rasporedScraper.getRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, dv);
+			    Raspored raspored = prasporedScraper.getRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, dv);
           if (raspored != null) cachedRasporedService.putRaspored(key, raspored);
           currentScraping.remove(key);
         }
@@ -82,7 +82,7 @@ public class RasporedService {
     {
       currentScraping.add(key);
       asyncFetch(odlazniKolodvorId,dolazniKolodvorId,datum,dv);
-      raspored = rasporedScraper.getRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, dv);
+      raspored = prasporedScraper.getRaspored(odlazniKolodvorId, dolazniKolodvorId, datum, dv);
       if (raspored != null) cachedRasporedService.putRaspored(key, raspored);
       currentScraping.remove(key);
     }
