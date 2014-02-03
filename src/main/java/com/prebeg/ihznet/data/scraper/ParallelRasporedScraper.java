@@ -206,6 +206,8 @@ public class ParallelRasporedScraper {
 			HtmlPage timeTablePage = getTimeTablePage(wc, odlazniKolodvorId,
 					dolazniKolodvorId, datum, dv);
 
+			wc.closeAllWindows();
+			
 			if (dv.equals("D")) {
 				novaPutovanja = getIzravnaPutovanja(timeTablePage);
 			} else if (dv.equals("S")) {
@@ -226,6 +228,56 @@ public class ParallelRasporedScraper {
 
 		return raspored;
 	}
+	
+	private List<Putovanje> getPutovanja(List<String> urls) 
+	{
+		List<Callable<Putovanje>> tasks = new ArrayList<Callable<Putovanje>>();
+
+		int i = 0;
+		
+		System.out.println("WILL LAUNCH " + urls.size() +  " TASKS");
+		
+		for (final String url : urls) {
+
+	
+			final Integer in = i++;
+			Callable<Putovanje> c = new Callable<Putovanje>() {
+				@Override
+				public Putovanje call() throws Exception {
+					log.info("OPEN " + in + " " + Thread.currentThread().getName() + " " + url);
+					Putovanje p = scrapePutovanje(url);
+					log.info("DONE " + in + " " + Thread.currentThread().getName() + " " + url);
+					return p;
+				}
+			};
+
+			tasks.add(c);
+		}
+
+		
+		List<Putovanje> putovanja = new LinkedList<Putovanje>();
+		try {
+			List<Future<Putovanje>> results = exec.invokeAll(tasks);
+			for (Future<Putovanje> fp : results) {
+				Putovanje putovanje = fp.get();
+				if (putovanje != null) {
+					putovanje.setBrojPresjedanja(putovanje.getListaLinija()
+							.getLinije().size() - 1);
+
+					if (putovanje.getBrojPresjedanja() == 0)
+						putovanje.setIzravno(true);
+					else
+						putovanje.setIzravno(false);
+
+					putovanja.add(putovanje);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return putovanja;
+	}
 
 	private List<Putovanje> getIzravnaPutovanja(HtmlPage timeTablePage)
 			throws FailingHttpStatusCodeException, MalformedURLException,
@@ -238,10 +290,8 @@ public class ParallelRasporedScraper {
 		HtmlTable timeTable = (HtmlTable) timeTablePage.getElementsByTagName(
 				"table").item(1);
 
-		List<Callable<Putovanje>> tasks = new ArrayList<Callable<Putovanje>>();
+		List<String> urls = new ArrayList<String>();
 
-		// ///
-		int i = 0;
 		for (HtmlTableRow row : timeTable.getRows()) {
 
 			// skip header
@@ -252,43 +302,14 @@ public class ParallelRasporedScraper {
 
 			final HtmlAnchor putovanjeUrl = (HtmlAnchor) urlCell
 					.getElementsByTagName("a").get(0);
-			final Integer in = i++;
-			Callable<Putovanje> c = new Callable<Putovanje>() {
-				@Override
-				public Putovanje call() throws Exception {
-					log.info(">> " + in + " " + Thread.currentThread().getName());
-					Putovanje p = scrapePutovanje(putovanjeUrl);
-					log.info("<< " + in);
-					return p;
-				}
-			};
-
-			tasks.add(c);
-		}
-
+			
+			String url = putovanjeUrl.getHrefAttribute().replaceAll("\\s+", "");
 		
-		List<Putovanje> putovanja = new LinkedList<Putovanje>();
-		try {
-			List<Future<Putovanje>> results = exec.invokeAll(tasks);
-			for (Future<Putovanje> fp : results) {
-				Putovanje putovanje = fp.get();
-				if (putovanje != null) {
-					putovanje.setBrojPresjedanja(putovanje.getListaLinija()
-							.getLinije().size() - 1);
 
-					if (putovanje.getBrojPresjedanja() == 0)
-						putovanje.setIzravno(true);
-					else
-						putovanje.setIzravno(false);
-
-					putovanja.add(putovanje);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			urls.add(url);
 		}
-
-		return putovanja;
+		
+		return getPutovanja(urls);
 	}
 
 	private List<Putovanje> getSvaPutovanjaSMogucimVezama(HtmlPage timeTablePage)
@@ -298,9 +319,8 @@ public class ParallelRasporedScraper {
 		HtmlTable timeTable = (HtmlTable) timeTablePage.getElementsByTagName(
 				"table").item(1);
 
-		List<Callable<Putovanje>> tasks = new ArrayList<Callable<Putovanje>>();
+		List<String> urls = new ArrayList<String>();
 
-		int i = 0;
 		for (HtmlTableRow row : timeTable.getRows()) {
 
 			// skip header
@@ -311,49 +331,20 @@ public class ParallelRasporedScraper {
 			final HtmlAnchor putovanjeUrl = (HtmlAnchor) tableCell
 					.getElementsByTagName("a").get(0);
 			
-			final Integer in = i++;
-			Callable<Putovanje> c = new Callable<Putovanje>() {
-				@Override
-				public Putovanje call() throws Exception {
-					log.info(">> " + in + " " + putovanjeUrl.getHrefAttribute());
-					Putovanje p = scrapePutovanje(putovanjeUrl);
-					log.info("<< " + in);
-					return p;
-				}
-			};
-
-			tasks.add(c);
+			String url = putovanjeUrl.getHrefAttribute().replaceAll("\\s+", "");
+			
+			urls.add(url);
 		}
 		
-		List<Putovanje> putovanja = new LinkedList<Putovanje>();
-		try {
-			List<Future<Putovanje>> results = exec.invokeAll(tasks);
-			for (Future<Putovanje> fp : results) {
-				Putovanje putovanje = fp.get();
-				if (putovanje != null) {
-					putovanje.setBrojPresjedanja(putovanje.getListaLinija()
-							.getLinije().size() - 1);
-
-					if (putovanje.getBrojPresjedanja() == 0)
-						putovanje.setIzravno(true);
-					else
-						putovanje.setIzravno(false);
-
-					putovanja.add(putovanje);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return putovanja;
+		return getPutovanja(urls);
 	}
 
-	private Putovanje scrapePutovanje(HtmlAnchor url) throws IOException {
+	private Putovanje scrapePutovanje(String url) throws IOException {
 		
 		WebClient wc = getWebClientNoJs();
 		//HtmlPage putovanjePage = (HtmlPage) url.openLinkInNewWindow();
-		HtmlPage putovanjePage = wc.getPage(url.getHrefAttribute().replaceAll("\\s+", ""));
+		
+		HtmlPage putovanjePage = wc.getPage(url);
 		
 		// log.info(putovanjePage.asText());
 
