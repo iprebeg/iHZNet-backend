@@ -204,7 +204,7 @@ public class ParallelRasporedScraper {
 					dolazniKolodvorId, datum, dv);
 
 			// should kill js executor 
-			wc.closeAllWindows();
+			// wc.closeAllWindows();
 			
 			if (dv.equals("D")) {
 				novaPutovanja = getIzravnaPutovanja(timeTablePage);
