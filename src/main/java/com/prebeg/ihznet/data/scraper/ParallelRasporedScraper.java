@@ -322,6 +322,7 @@ public class ParallelRasporedScraper {
 			throws FailingHttpStatusCodeException, MalformedURLException,
 			IOException {
 
+	
 		HtmlTable timeTable = (HtmlTable) timeTablePage.getElementsByTagName(
 				"table").item(1);
 
@@ -391,6 +392,12 @@ public class ParallelRasporedScraper {
 			String cekanje = row.getCells().get(3).asText().trim();
 			String vlak = row.getCells().get(4).asText().trim();
 			String kat = row.getCells().get(5).asText().trim();
+			
+			if (dolazak.equals("24:00"))
+				dolazak = "00:00";
+			
+			if (odlazak.equals("24:00"))
+				odlazak = "00:00";
 
 			/* open new line if */
 			if ((dolazak.isEmpty() && !odlazak.isEmpty())
