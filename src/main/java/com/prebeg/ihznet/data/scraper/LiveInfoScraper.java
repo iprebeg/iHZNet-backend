@@ -131,9 +131,13 @@ public class LiveInfoScraper {
 	
 	public LiveInfo parseKretanjePage(HtmlPage kretanjeVlakPage)
 	{
+		HtmlTable kretanjeTable = null;
+		try {
+			kretanjeTable = (HtmlTable)kretanjeVlakPage.getElementsByTagName("table").item(1);
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
 		
-		HtmlTable kretanjeTable = (HtmlTable)kretanjeVlakPage.getElementsByTagName("table").item(1);
-
 		// Kolodvor	DolazakOdlazak	Datum	Sat	Kasni
 		
 		LiveInfo liveInfo = new LiveInfo();
