@@ -323,8 +323,14 @@ public class ParallelRasporedScraper {
 			IOException {
 
 	
-		HtmlTable timeTable = (HtmlTable) timeTablePage.getElementsByTagName(
+		HtmlTable timeTable = null;
+		try {
+				timeTable = (HtmlTable) timeTablePage.getElementsByTagName(
 				"table").item(1);
+		} catch (IndexOutOfBoundsException e) {
+			System.out.println("FAULTY PAGE:" + timeTablePage.asXml());
+			return null;
+		}
 
 		List<String> urls = new ArrayList<String>();
 
