@@ -111,7 +111,13 @@ public class ParallelRasporedScraper {
 
 		final HtmlPage page = wc.getPage(webRequest);
 
-		HtmlForm searchForm = page.getForms().get(0);
+		HtmlForm searchForm = null;
+		try {
+			searchForm = page.getForms().get(0);
+		} catch (IndexOutOfBoundsException e) {
+			log.error("FAULTY PAGE:" + page.asXml());
+			return null;
+		}
 
 		// log.info(searchForm.asXml());
 
@@ -328,7 +334,7 @@ public class ParallelRasporedScraper {
 				timeTable = (HtmlTable) timeTablePage.getElementsByTagName(
 				"table").item(1);
 		} catch (IndexOutOfBoundsException e) {
-			System.out.println("FAULTY PAGE:" + timeTablePage.asXml());
+			log.error("FAULTY PAGE:" + timeTablePage.asXml());
 			return null;
 		}
 
