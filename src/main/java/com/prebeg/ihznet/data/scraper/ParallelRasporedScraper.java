@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -221,9 +223,15 @@ public class ParallelRasporedScraper {
 
 		wc.closeAllWindows();
 
+		Collections.sort(raspored.getPutovanja(), new Comparator<Putovanje>() {
+			@Override public int compare(Putovanje o1, Putovanje o2) {
+				return o1.getListaLinija().getLinije().get(0).getVrijemeOdlaska().compareTo(o2.getListaLinija().getLinije().get(0).getVrijemeOdlaska());
+			}
+		} );
+
 		long elapsed = System.currentTimeMillis() - start;
 		log.info(String.format("Elapsed time: %d ms ", elapsed));
-
+		
 		return raspored;
 	}
 	
