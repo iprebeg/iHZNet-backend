@@ -20,9 +20,9 @@ import com.prebeg.ihznet.model.ListaKolodvora;
 public class KolodvorScraper {
 
 	private WebClient getWebClient() {
-		WebClient wc = new WebClient(BrowserVersion.FIREFOX_3_6);
-		wc.setCssEnabled(true);
-		wc.setJavaScriptEnabled(true);		
+		WebClient wc = new WebClient(BrowserVersion.CHROME);
+		wc.getOptions().setCssEnabled(true);
+		wc.getOptions().setJavaScriptEnabled(true);		
 		wc.setAjaxController(new NicelyResynchronizingAjaxController());
 		
 		return wc;
@@ -30,30 +30,6 @@ public class KolodvorScraper {
 	
 	//private String baseurl = "http://vred.hznet.hr/hzinfo/?category=hzinfo&service=vred3&nkod1=&nkdo1=&lang=hr&screen=4";
 	private String baseurl = "http://vred.hzinfra.hr/hzinfo/?category=hzinfo&service=vred3&nkod1=&nkdo1=&lang=hr&screen=4";
-	
-	public ListaKolodvora getKolodvori_no_js() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-		
-		WebClient wc = getWebClient();
-		
-		final HtmlPage page = wc.getPage(baseurl);
-		
-		HtmlForm searchForm = page.getForms().get(0);
-		
-		ListaKolodvora kolodvori = new ListaKolodvora();
-		
-		final HtmlSelect NKOD1Select = (HtmlSelect) searchForm.getSelectByName("NKOD1");
-		
-		for (HtmlOption option : NKOD1Select.getOptions()) {  
-			if (option.asText().trim().length() > 0) {
-				Kolodvor kolodvor = new Kolodvor();
-				kolodvor.setNaziv(option.asText().trim());
-				kolodvor.setId(NKOD1Select.getOptions().indexOf(option));
-				kolodvori.addKolodvor(kolodvor);
-			}
-		}
-		
-		return kolodvori;
-	}
 	
 	public ListaKolodvora getKolodvori() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		
@@ -90,6 +66,7 @@ public class KolodvorScraper {
 			}
 		}
 		
+		wc.closeAllWindows();
 		return kolodvori;
 	}
 	

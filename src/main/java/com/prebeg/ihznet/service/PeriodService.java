@@ -28,6 +28,12 @@ public class PeriodService {
     //System.out.println("a:" + a);
     //System.out.println("b:" + b);
 
+	if (a.equals("24:00"))
+		a = "00:00";
+	
+	if (b.equals("24:00"))
+		b = "00:00";	
+		
     if (a.compareTo(b) <= 0)
     {
       a = "01.01.1970" + " " + a;
